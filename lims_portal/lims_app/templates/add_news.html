@@ -1,0 +1,64 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container mt-5">
+  <!-- Заголовки -->
+  <div class="row">
+    <div class="col-md-4 text-light bg-primary text-center py-2">
+      <h4>Add New News</h4>
+    </div>
+    <div class="col-md-8 text-center py-2">
+      <h4>Manage Library News</h4>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <!-- Ліва панель: форма додавання новини -->
+    {% if request.user.is_staff %}
+      <div class="col-md-6">
+        <div class="bg-light p-3" style="border-radius: 5px;">
+          <form action="/news/add/" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="news_title" class="form-label">Title</label>
+              <input type="text" class="form-control" id="news_title" name="title" required>
+            </div>
+            <div class="mb-3">
+              <label for="news_content" class="form-label">Content</label>
+              <textarea class="form-control" id="news_content" name="content" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="news_image" class="form-label">Image (optional)</label>
+              <input type="file" class="form-control" id="news_image" name="image">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Add News</button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-md-12">
+        <p class="text-danger">You do not have permission to add news. Only librarians can do that.</p>
+      </div>
+    {% endif %}
+
+    <!-- Права панель: список новин -->
+    <div class="col-md-6">
+      <div class="bg-light p-3" style="border-radius: 5px;">
+        <h5>Recent News</h5>
+        <ul class="list-group">
+          {% for news in news_list %}
+            <li class="list-group-item">
+              <a href="{% url 'news_details' news.id %}" class="text-decoration-none text-primary">
+                {{ news.title }}
+              </a>
+            </li>
+          {% empty %}
+            <li class="list-group-item text-center">No news available.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

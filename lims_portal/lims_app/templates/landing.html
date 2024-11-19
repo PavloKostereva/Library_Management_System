@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система управління ролями</title>
+    <link rel="stylesheet" href="{% static 'styles/main.css' %}"> <!-- Підключення CSS, якщо потрібно -->
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url('{% static "MAIN.jpeg" %}') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Розміщення елементів зверху */
+            align-items: center;
+        }
+
+        .container {
+            margin-top: 50px; /* Відступ від верхнього краю сторінки */
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6); /* Напівпрозорий фон */
+            padding: 20px 40px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .button-user {
+            background-color: #4CAF50; /* Зелений */
+        }
+
+        .button-user:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .button-librarian {
+            background-color: #ffa500; /* Помаранчевий */
+        }
+
+        .button-librarian:hover {
+            background-color: #ff8c00;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Вітаємо у бібліотеці!</h1>
+        <button class="button button-user" onclick="window.location.href='/login/user/'">Я користувач</button>
+        <button class="button button-librarian" onclick="window.location.href='/login/librarian/'">Я бібліотекар</button>
+    </div>
+</body>
+</html>

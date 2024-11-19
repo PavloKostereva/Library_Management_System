@@ -1,0 +1,120 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container mt-5">
+  <!-- Заголовок -->
+  <div class="row mb-4">
+    <div class="col">
+      <h3 class="text-primary">Returns</h3>
+    </div>
+  </div>
+
+  <!-- Пошук -->
+  <form action="/returns/" method="POST" class="d-flex mb-4">
+    {% csrf_token %}
+    <input type="text" class="form-control" placeholder="Search by book title, author, or reader" name="query" value="{{ query }}">
+    <button type="submit" class="btn btn-outline-primary ms-2">Search</button>
+  </form>
+
+  <!-- Таблиця повернень -->
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Return ID</th>
+          <th>Book Title</th>
+          <th>Reader</th>
+          <th>Return Date</th>
+          <th>Overdue</th>
+          <th>Fine</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for return in returns %}
+        <tr>
+          <td>{{ return.id }}</td>
+          <td>{{ return.book.title }}</td>
+          <td>{{ return.reader.reader_name }}</td>
+          <td>{{ return.return_date }}</td>
+          <td>
+            {% if return.is_overdue %}
+            <span class="text-danger">Yes</span>
+            {% else %}
+            <span class="text-success">No</span>
+            {% endif %}
+          </td>
+          <td>${{ return.fine }}</td>
+          <td>
+            <a href="/returns/{{ return.id }}/check" class="btn btn-primary btn-sm">Check Status</a>
+            <a href="/returns/{{ return.id }}/extend" class="btn btn-warning btn-sm">Extend</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center">No return records found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Форма звернення до бібліотекаря -->
+  <div class="card mt-5">
+    <div class="card-header bg-primary text-light">Contact Librarian</div>
+    <div class="card-body">
+      <form action="/contact_librarian" method="POST" id="contactForm">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="name" class="form-label">Your Name</label>
+          <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Your Email</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+          <label for="message" class="form-label">Message</label>
+          <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+      </form>
+      <div id="successMessage" class="alert alert-success mt-3" style="display:none;">Your message has been sent!</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Обробник для відправки форми та показу повідомлення про успіх
+  document.getElementById("contactForm").addEventListener("submit", function(event) {
+    event.preventDefault();  // Зупиняємо відправку форми за замовчуванням
+
+    // Відправка форми через AJAX або інший спосіб
+    var formData = new FormData(this);
+
+    fetch("/contact_librarian", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => response.json())  // Припускаємо, що сервер повертає JSON
+    .then(data => {
+      // Якщо все добре, показуємо повідомлення про успіх
+      var successMessage = document.getElementById("successMessage");
+      successMessage.style.display = "block";  // Показуємо повідомлення
+
+      // Сховати повідомлення через 1 секунду
+      setTimeout(function() {
+        successMessage.style.display = "none";
+      }, 1000);
+
+      // Очищаємо поля форми
+      document.getElementById("contactForm").reset();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+</script>
+
+{% endblock %}

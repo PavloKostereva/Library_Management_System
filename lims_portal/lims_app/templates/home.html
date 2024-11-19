@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{%extends "index.html" %}
+
+{%load static%}
+
+{%block main_content%}
+<main role="main">
+<div class="jumbotron">
+    <div class="container">
+    <img src="{%static 'LIMS_LOGO_BIG.png'%}" class="rounded float-start" alt="LIMS" height="200" style="margin-right: 10px;">
+    <h1 class="display-4">Hello, readers!</h1>
+        <p>Welcome to City Library. We have a large collection of books to cater the reading needs of all kinds of readers.</p>
+        <p><a role="button" href="#" class="btn btn-primary btn-lg">Browse our collection</a></p>
+    </div>
+
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+        <h2>Why reading is important></h2>
+        <p>Reading is good for you because it improves your concentration, memory, empathy and communication skills. It can reduce stress, improve your mental health and help you live longer. Reading also allows you to learn new things that will help you succeed in your work and relationships.</p>
+    </div>
+    <div class="col">
+        <h2>Key Benefits</h2>
+        <ul>
+            <li>
+                Increases your vocabulary and comprehension
+            </li>
+             <li>
+               Reduces stress
+            </li>
+             <li>
+              Improves mental health
+            </li>
+             <li>
+               Prevents cognitive decline
+            </li>
+        </ul>
+    </div>
+    <div class="col">
+<h2>Thought for the day!</h2>
+        <p>“Just keep trying to do what you really want to do. Where there's love and inspiration, I don't think you can go wrong." – Ella Fitzgerald</p>
+    </div>
+  </div>
+<hr>
+
+</div>
+    </main>
+<footer class="container">
+    <p>
+        ©Library_Management_System by Pavlo_Kostereva 2024
+    </p>
+</footer>
+
+{%endblock%}

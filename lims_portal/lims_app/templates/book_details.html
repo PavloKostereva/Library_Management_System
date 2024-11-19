@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="text-center mb-4">{{ book.title }}</h2>
+      <div class="card">
+        <div class="card-header bg-primary text-light">
+          <h4>Book Details</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Author:</strong> {{ book.author }}</p>
+          <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+          <p><strong>Genre:</strong> {{ book.genre }}</p>
+          <p><strong>Publisher:</strong> {{ book.publisher }}</p>
+          <p><strong>Description:</strong> {{ book.description }}</p>
+          <p><strong>Available:</strong> {{ book.available|yesno:"Yes,No" }}</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
