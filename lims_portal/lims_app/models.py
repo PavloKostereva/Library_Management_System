@@ -38,3 +38,9 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
+class User(models.Model):
+    name = models.CharField(max_length=100)
+    reference_id = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name

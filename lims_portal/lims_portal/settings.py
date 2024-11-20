@@ -56,8 +56,10 @@ ROOT_URLCONF = 'lims_portal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':[os.path.abspath(os.path.dirname(__file__)+"/../lims_app/templates")],
-        'APP_DIRS': True,
+        'DIRS': [
+            BASE_DIR / 'templates',  # Це дозволяє шукати шаблони в кореневій папці проекту
+        ],
+        'APP_DIRS': True,  # Це дозволяє Django шукати шаблони в папках 'templates' кожного додатку
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -68,6 +70,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'lims_portal.wsgi.application'
 

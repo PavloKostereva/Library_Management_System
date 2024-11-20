@@ -8,11 +8,28 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import Book
+from .models import Book, User
 
 def home(request):
     return render(request, 'home.html', context={"current_tab": "home"})
 
+def home_for_user(request):
+    return render(request, 'home_for_user.html')
+
+def books_search_for_user(request):
+    if not request.user.is_authenticated:
+        return redirect('user_login')  # Якщо користувач не авторизований
+    return render(request, 'books_search_for_user.html')
+
+
+def return_for_user(request):
+    return render(request, 'return_for_user.html')
+
+def read_news_for_user(request):
+    return render(request, 'read_news_for_user.html')
+def index_for_user(request):
+    # Логіка для відображення сторінки для користувача
+    return render(request, 'index_for_user.html')
 def readers_admin(request):
     return render(request, 'readers_admin.html')
 
@@ -223,18 +240,19 @@ def librarian_login(request):
 
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        # Отримуємо введені ім'я та ID
+        name = request.POST.get('name')
+        reference_id = request.POST.get('reference_id')
 
-        if user is not None:
-            login(request, user)
-            # Перенаправляємо на спільну сторінку після успішного входу
-            return redirect('dashboard')
+        # Перевірка, чи співпадає ім'я та ID
+        if name == "Pavlo" and reference_id == "12345":
+            # Якщо ім'я та ID правильні, перенаправляємо користувача на сторінку для користувача
+            return redirect('index_for_user')  # Замість 'home' вказуємо 'index_for_user'
         else:
-            messages.error(request, 'Invalid username or password')
+            # Якщо ім'я або ID невірні, показуємо помилку
+            return HttpResponse("Невірне ім'я або ID!")
 
-    return render(request, 'login.html')
+    return render(request, 'user_login.html')
 
 
 
@@ -264,5 +282,4 @@ def read_news(request):
 
 def landing_page(request):
     return render(request, 'landing.html')
-
 

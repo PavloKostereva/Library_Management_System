@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% extends "index_for_user.html" %}
+{% load static %}
+
+{% block main_content %}
+<div class="container mt-5">
+  <!-- Заголовок -->
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center py-2">
+      <h4>Search Books</h4>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mt-3">
+    <!-- Центрована панель пошуку -->
+    <div class="col-md-8">
+      <!-- Пошукова форма -->
+      <form action="/books/" method="POST" class="d-flex mb-3">
+        {% csrf_token %}
+        <input class="form-control me-2" type="search" placeholder="Search by title, author, or genre" name="query" value="{{ query }}">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+      </form>
+
+      <!-- Результати -->
+      <p class="fw-bold">{{ books|length }} books found.</p>
+
+      <!-- Таблиця -->
+      <div class="table-responsive" style="max-height: 400px;">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Genre</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for book in books %}
+            <tr>
+              <td>
+                <a href="{% url 'book_details' book.id %}" class="text-decoration-none text-primary">
+                  {{ book.title }}
+                </a>
+              </td>
+              <td>{{ book.author }}</td>
+              <td>{{ book.genre }}</td>
+              <td>
+                <a href="{% url 'book_details' book.id %}" class="btn btn-info btn-sm">View Details</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center">No books found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
