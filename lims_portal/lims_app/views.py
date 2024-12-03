@@ -1,14 +1,18 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponse
-from django.core.mail import send_mail
+from django.http import HttpResponse
 from datetime import timedelta
-from .models import Book, Reader, Return
-from .models import News
-from django.contrib.auth.decorators import login_required
+from .models import Reader, Return
 from django.contrib.auth import authenticate, login
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from .models import Book, User
+from django.views.decorators.csrf import csrf_exempt
+from .models import Book
+from django.db.models import Q
+from .models import News
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import NewsForm
+def about_library_for_user(request):
+    return render(request, 'about_library_for_user.html')
 
 def home(request):
     return render(request, 'home.html', context={"current_tab": "home"})
@@ -16,23 +20,48 @@ def home(request):
 def home_for_user(request):
     return render(request, 'home_for_user.html')
 
+@login_required
 def books_search_for_user(request):
-    if not request.user.is_authenticated:
-        return redirect('user_login')  # Якщо користувач не авторизований
-    return render(request, 'books_search_for_user.html')
+    query = request.GET.get('query', '')  # Get search query
+    user_books = []
+
+    if query:
+        user_books = Book.objects.filter(
+            Q(title__icontains=query) |
+            Q(author__icontains=query) |
+            Q(genre__icontains=query)
+        )
+    else:
+        user_books = Book.objects.all()
+
+    return render(request, 'books_search_for_user.html', {'books': user_books, 'query': query})
 
 
 def return_for_user(request):
     return render(request, 'return_for_user.html')
 
 def read_news_for_user(request):
-    return render(request, 'read_news_for_user.html')
+    news_list = News.objects.all().order_by('-created_at')  # Отримуємо всі новини
+    return render(request, 'read_news_for_user.html', {'news_list': news_list})
+
 def index_for_user(request):
     # Логіка для відображення сторінки для користувача
-    return render(request, 'index_for_user.html')
+    return render(request, 'home_for_user.html')
 def readers_admin(request):
     return render(request, 'readers_admin.html')
 
+
+def readers(request):
+    query = request.GET.get('query', '')  # Отримуємо запит для пошуку
+    if query:
+        readers = Reader.objects.filter(
+            Q(reader_name__icontains=query) |
+            Q(reader_contact__icontains=query) |
+            Q(reference_id__icontains=query)
+        )
+    else:
+        readers = Reader.objects.all()  # Якщо немає запиту, виводимо всіх читачів
+    return render(request, 'readers.html', {'readers': readers, 'query': query})
 
 
 @login_required
@@ -90,8 +119,8 @@ def books(request):
 
 @login_required
 def add_book(request):
-    if not request.user.is_staff:  # Перевірка, чи бібліотекар
-        return redirect('/login/librarian/')  # Перенаправлення на сторінку входу бібліотекаря
+    if not request.user.is_staff:
+        return redirect('login:librarian')  # Redirect to login page for librarian if user is not a librarian
 
     if request.method == 'POST':
         title = request.POST.get('book_title')
@@ -100,19 +129,19 @@ def add_book(request):
         genre = request.POST.get('genre')
         publisher = request.POST.get('publisher')
 
-        # Перевіряємо чи всі необхідні поля заповнені
         if title and author and isbn:
-            # Створюємо нову книгу і зберігаємо її в базі даних
             Book.objects.create(
                 title=title,
                 author=author,
                 isbn=isbn,
                 genre=genre,
-                publisher=publisher
+                publisher=publisher,
+                added_by=request.user  # Use logged-in user as the book's creator
             )
-            return redirect('books')  # Переадресація на сторінку зі списком книг
+            return redirect('books')
 
-    return render(request, 'books_and_add.html')  # Повернення до форми додавання книги
+    return render(request, 'books_and_add.html')
+
 
 def book_details(request, id):
     book = get_object_or_404(Book, id=id)
@@ -175,19 +204,28 @@ def extend_return(request, return_id):
     except Return.DoesNotExist:
         return JsonResponse({"error": "Return record not found"}, status=404)
 
+@csrf_exempt  # Якщо є проблеми з CSRF, але краще налаштувати токен
 def contact_librarian(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        message = request.POST.get('message')
-        send_mail(
-            subject=f"Message from {name}",
-            message=message,
-            from_email=email,
-            recipient_list=["librarian@example.com"],
-        )
-        return JsonResponse({"message": "Your message has been sent!"})
-    return JsonResponse({"error": "Invalid request method"}, status=400)
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        message = request.POST.get("message")
+
+        if name and email and message:
+            try:
+                send_mail(
+                    subject=f"Message from {name}",
+                    message=message,
+                    from_email=email,
+                    recipient_list=["logikasun@gmail.com"],  # Ваш email
+                    fail_silently=False,
+                )
+                return JsonResponse({"success": True})
+            except Exception as e:
+                print(f"Error: {e}")
+                return JsonResponse({"success": False, "error": str(e)})
+        return JsonResponse({"success": False, "error": "Missing fields"})
+    return JsonResponse({"success": False, "error": "Invalid request method"})
 def save_student(request):
     # Ваша логіка для збереження студента
     return HttpResponse("Student saved!")
@@ -196,25 +234,6 @@ def returns_view(request):
     return render(request, 'returns.html')
 
 
-@login_required
-def add_news(request):
-    if not request.user.is_staff:
-        return redirect('/')  # Перенаправлення для не бібліотекарів
-
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-
-        if title and content:
-            news_item = News(
-                title=title,
-                content=content
-            )
-            news_item.save()
-            return redirect('news_list')  # Перенаправлення на сторінку зі списком новин
-
-    news_list = News.objects.all().order_by('-created_at')  # Отримуємо всі новини
-    return render(request, 'add_news.html', {'news_list': news_list})  # Повертаємо форму та список новин
 
 
 
@@ -255,6 +274,10 @@ def user_login(request):
     return render(request, 'user_login.html')
 
 
+def books_details_for_user(request, id):
+    book = get_object_or_404(Book, id=id)
+    return render(request, 'books_details_for_user.html', {'book': book})
+
 
 def user_dashboard(request):
     if 'reader_id' not in request.session:  # Перевірка наявності сесії користувача
@@ -263,18 +286,21 @@ def user_dashboard(request):
     return render(request, 'user_dashboard.html', {'reader': reader_instance})
 
 
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def librarian_dashboard(request):
     if not request.user.is_staff:
         return redirect('/login/librarian/')
     return render(request, 'librarian_dashboard.html')
-@login_required
-def news_details(request, news_id):
-    news_item = get_object_or_404(News, id=news_id)
-    return render(request, 'news_details.html', {'news_item': news_item})
 
+def news_details_for_user(request, pk):
+    news = get_object_or_404(News, pk=pk)
+    return render(request, 'news_details_for_user.html', {'news': news})
+
+
+def news_details(request, pk):
+    news = get_object_or_404(News, pk=pk)
+    return render(request, 'news_details.html', {'news': news})
 @login_required
 def read_news(request):
     news_list = News.objects.all().order_by('-created_at')  # Отримуємо всі новини
@@ -283,3 +309,24 @@ def read_news(request):
 def landing_page(request):
     return render(request, 'landing.html')
 
+def add_news(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        news = News.objects.create(title=title, content=content)
+        return JsonResponse({'success': True, 'title': news.title, 'content': news.content, 'id': news.id})
+    return render(request, 'add_news.html')
+
+def edit_news(request, news_id):
+    news = get_object_or_404(News, id=news_id)
+    if request.method == 'POST':
+        news.title = request.POST.get('title')
+        news.content = request.POST.get('content')
+        news.save()
+        return JsonResponse({'success': True, 'title': news.title, 'content': news.content, 'id': news.id})
+    return render(request, 'edit_news.html', {'news': news})
+
+def delete_news(request, news_id):
+    news = get_object_or_404(News, id=news_id)
+    news.delete()
+    return JsonResponse({'success': True})

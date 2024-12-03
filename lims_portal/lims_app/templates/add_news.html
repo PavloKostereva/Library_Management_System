@@ -3,7 +3,6 @@
 
 {% block main_content %}
 <div class="container mt-5">
-  <!-- Заголовки -->
   <div class="row">
     <div class="col-md-4 text-light bg-primary text-center py-2">
       <h4>Add New News</h4>
@@ -14,11 +13,10 @@
   </div>
 
   <div class="row mt-3">
-    <!-- Ліва панель: форма додавання новини -->
     {% if request.user.is_staff %}
       <div class="col-md-6">
         <div class="bg-light p-3" style="border-radius: 5px;">
-          <form action="/news/add/" method="POST">
+          <form id="news_form" action="/news/add/" method="POST">
             {% csrf_token %}
             <div class="mb-3">
               <label for="news_title" class="form-label">Title</label>
@@ -27,10 +25,6 @@
             <div class="mb-3">
               <label for="news_content" class="form-label">Content</label>
               <textarea class="form-control" id="news_content" name="content" rows="5" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="news_image" class="form-label">Image (optional)</label>
-              <input type="file" class="form-control" id="news_image" name="image">
             </div>
             <button type="submit" class="btn btn-primary w-100">Add News</button>
           </form>
@@ -42,16 +36,21 @@
       </div>
     {% endif %}
 
-    <!-- Права панель: список новин -->
     <div class="col-md-6">
       <div class="bg-light p-3" style="border-radius: 5px;">
         <h5>Recent News</h5>
-        <ul class="list-group">
+        <ul class="list-group" id="news_list">
           {% for news in news_list %}
-            <li class="list-group-item">
+            <li class="list-group-item" id="news_{{ news.id }}">
               <a href="{% url 'news_details' news.id %}" class="text-decoration-none text-primary">
                 {{ news.title }}
               </a>
+              {% if request.user.is_staff %}
+                <div class="d-flex justify-content-end mt-2">
+                  <button type="button" class="btn btn-warning btn-sm me-2" onclick="editNews({{ news.id }}, '{{ news.title }}', '{{ news.content }}')">Edit</button>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="deleteNews({{ news.id }})">Delete</button>
+                </div>
+              {% endif %}
             </li>
           {% empty %}
             <li class="list-group-item text-center">No news available.</li>
@@ -61,4 +60,76 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Handle form submission for adding news via AJAX
+  const form = document.getElementById('news_form');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const formData = new FormData(form);
+    const actionUrl = form.action;
+
+    fetch(actionUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Clear the form
+        form.reset();
+        // Create a new list item for the news
+        const newNewsItem = document.createElement('li');
+        newNewsItem.classList.add('list-group-item');
+        newNewsItem.id = 'news_' + data.id;
+        newNewsItem.innerHTML = `
+          <a href="/news/${data.id}/" class="text-decoration-none text-primary">${data.title}</a>
+          <div class="d-flex justify-content-end mt-2">
+            <button type="button" class="btn btn-warning btn-sm me-2" onclick="editNews(${data.id}, '${data.title}', '${data.content}')">Edit</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="deleteNews(${data.id})">Delete</button>
+          </div>
+        `;
+        document.getElementById('news_list').appendChild(newNewsItem);
+      }
+    });
+  });
+
+  // Delete a news item via AJAX
+  function deleteNews(newsId) {
+    if (confirm('Are you sure you want to delete this news?')) {
+      fetch(`/news/delete/${newsId}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById(`news_${newsId}`).remove();
+        }
+      });
+    }
+  }
+
+  // Edit a news item
+  function editNews(newsId, title, content) {
+    // Fill the form with the existing news content for editing
+    document.getElementById('news_title').value = title;
+    document.getElementById('news_content').value = content;
+
+    // Change the form action to edit the news instead of adding new one
+    const form = document.getElementById('news_form');
+    form.action = `/news/edit/${newsId}/`;
+
+    // Change the button text to "Update News"
+    const button = form.querySelector('button');
+    button.textContent = 'Update News';
+  }
+</script>
+
 {% endblock %}

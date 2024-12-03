@@ -1,5 +1,7 @@
 from django.db import models
 from datetime import date
+from django.contrib.auth.models import User
+from django import forms
 
 class Reader(models.Model):
     reader_name = models.CharField(max_length=255)
@@ -19,6 +21,7 @@ class Book(models.Model):
     publisher = models.CharField(max_length=200, blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
     available = models.BooleanField(default=True)
+    added_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # Link to Django User model
 
     def __str__(self):
         return self.title
@@ -32,15 +35,10 @@ class Return(models.Model):
     fine = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 
 class News(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=255)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
-class User(models.Model):
-    name = models.CharField(max_length=100)
-    reference_id = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.name

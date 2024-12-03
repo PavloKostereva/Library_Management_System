@@ -6,22 +6,22 @@
   <!-- Заголовок -->
   <div class="row mb-4">
     <div class="col">
-      <h3 class="text-primary">Returns</h3>
+      <h3 style="color: #6f42c1;">Returns</h3>
     </div>
   </div>
 
   <!-- Пошук -->
-  <form action="/returns/" method="POST" class="d-flex mb-4">
+  <form action="" method="POST" class="d-flex mb-4">
     {% csrf_token %}
     <input type="text" class="form-control" placeholder="Search by book title, author, or reader" name="query" value="{{ query }}">
-    <button type="submit" class="btn btn-outline-primary ms-2">Search</button>
+    <button type="submit" class="btn ms-2" style="color: #6f42c1; border: 1px solid #6f42c1;">Search</button>
   </form>
 
   <!-- Таблиця повернень -->
   <div class="table-responsive">
     <table class="table table-bordered">
       <thead>
-        <tr>
+        <tr style="color: #6f42c1;">
           <th>Return ID</th>
           <th>Book Title</th>
           <th>Reader</th>
@@ -40,47 +40,47 @@
           <td>{{ return.return_date }}</td>
           <td>
             {% if return.is_overdue %}
-            <span class="text-danger">Yes</span>
+            <span style="color: red;">Yes</span>
             {% else %}
-            <span class="text-success">No</span>
+            <span style="color: green;">No</span>
             {% endif %}
           </td>
           <td>${{ return.fine }}</td>
           <td>
-            <a href="/returns/{{ return.id }}/check" class="btn btn-primary btn-sm">Check Status</a>
-            <a href="/returns/{{ return.id }}/extend" class="btn btn-warning btn-sm">Extend</a>
+            <a href="" class="btn btn-sm" style="color: white; background-color: #6f42c1;">Check Status</a>
+            <a href="/returns/{{ return.id }}/extend" class="btn btn-sm" style="color: white; background-color: orange;">Extend</a>
           </td>
         </tr>
         {% empty %}
         <tr>
-          <td colspan="7" class="text-center">No return records found.</td>
+          <td colspan="7" class="text-center" style="color: #6f42c1;">No return records found.</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
-  <!-- Форма звернення до бібліотекаря -->
   <div class="card mt-5">
-    <div class="card-header bg-primary text-light">Contact Librarian</div>
+    <div class="card-header" style="background-color: #6f42c1; color: white;">Contact Librarian</div>
     <div class="card-body">
       <form action="/contact_librarian" method="POST" id="contactForm">
         {% csrf_token %}
         <div class="mb-3">
-          <label for="name" class="form-label">Your Name</label>
+          <label for="name" class="form-label" style="color: #6f42c1;">Your Name</label>
           <input type="text" class="form-control" id="name" name="name" required>
         </div>
         <div class="mb-3">
-          <label for="email" class="form-label">Your Email</label>
+          <label for="email" class="form-label" style="color: #6f42c1;">Your Email</label>
           <input type="email" class="form-control" id="email" name="email" required>
         </div>
         <div class="mb-3">
-          <label for="message" class="form-label">Message</label>
+          <label for="message" class="form-label" style="color: #6f42c1;">Message</label>
           <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Send Message</button>
+        <button type="submit" class="btn" style="color: white; background-color: #6f42c1;">Send Message</button>
       </form>
-      <div id="successMessage" class="alert alert-success mt-3" style="display:none;">Your message has been sent!</div>
+      <div id="successMessage" class="alert alert-success mt-3" style="display:none; color: green;">Your message has been sent!</div>
+      <div id="errorMessage" class="alert alert-danger mt-3" style="display:none; color: red;">An error occurred. Please try again later.</div>
     </div>
   </div>
 </div>
@@ -90,7 +90,7 @@
   document.getElementById("contactForm").addEventListener("submit", function(event) {
     event.preventDefault();  // Зупиняємо відправку форми за замовчуванням
 
-    // Відправка форми через AJAX або інший спосіб
+    // Відправка форми через AJAX
     var formData = new FormData(this);
 
     fetch("/contact_librarian", {
@@ -99,16 +99,18 @@
     })
     .then(response => response.json())  // Припускаємо, що сервер повертає JSON
     .then(data => {
-      // Якщо все добре, показуємо повідомлення про успіх
-      var successMessage = document.getElementById("successMessage");
-      successMessage.style.display = "block";  // Показуємо повідомлення
+      if (data.success) {
+        // Якщо все добре, показуємо повідомлення про успіх
+        document.getElementById("successMessage").style.display = "block";
+        setTimeout(function() {
+          document.getElementById("successMessage").style.display = "none";
+        }, 1000);
+      } else {
+        // Якщо виникла помилка, показуємо повідомлення про помилку
+        document.getElementById("errorMessage").style.display = "block";
+      }
 
-      // Сховати повідомлення через 1 секунду
-      setTimeout(function() {
-        successMessage.style.display = "none";
-      }, 1000);
-
-      // Очищаємо поля форми
+      // Очищаємо форму
       document.getElementById("contactForm").reset();
     })
     .catch(error => {

@@ -102,6 +102,12 @@
         <li class="nav-item">
           <a class="nav-link {% if current_tab == 'news' %}active{% endif %}" href="{% url 'read_news_for_user' %}">READ_NEWS</a>
         </li>
+
+        <<!-- Кнопка "About" для користувача -->
+<li class="nav-item">
+  <a class="nav-link {% if current_tab == 'about' %}active{% endif %}" href="{% url 'about_library_for_user' %}">ABOUT</a>
+</li>
+
       </ul>
     </div>
 

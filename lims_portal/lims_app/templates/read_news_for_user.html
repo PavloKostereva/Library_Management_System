@@ -4,10 +4,10 @@
 {% block main_content %}
 <div class="container mt-5">
   <div class="row">
-    <div class="col-md-4 text-light bg-primary text-center py-2">
+    <div class="col-md-4 text-light" style="background-color: #6f42c1; text-align: center; padding: 10px;">
       <h4>Library News</h4>
     </div>
-    <div class="col-md-8 text-center py-2">
+    <div class="col-md-8 text-center py-2" style="color: #6f42c1;">
       <h4>Stay Updated</h4>
     </div>
   </div>
@@ -15,12 +15,13 @@
   <div class="row mt-3">
     <!-- Ліва панель: новини -->
     <div class="col-md-4">
-      <div class="bg-light p-3" style="border-radius: 5px;">
-        <h5>Recent News</h5>
+      <div class="p-3" style="background-color: #f8f9fa; border-radius: 5px;">
+        <h5 style="color: #6f42c1;">Recent News</h5>
         <ul class="list-group">
           {% for news in news_list %}
           <li class="list-group-item">
-            <a href="{% url 'news_details' news.id %}" class="text-decoration-none text-primary">{{ news.title }}</a>
+            <a href="{% url 'news_details_for_user' news.id %}" style="text-decoration: none; color: #6f42c1;">{{ news.title }}</a>
+
             <p class="card-text text-muted small">{{ news.content|truncatewords:15 }}</p>
           </li>
           {% empty %}
@@ -32,17 +33,17 @@
 
     <!-- Права панель: новина для читання -->
     <div class="col-md-8">
-      <div class="bg-light p-3" style="border-radius: 5px;">
-        <h5 class="text-center mb-4">News List</h5>
+      <div class="p-3" style="background-color: #f8f9fa; border-radius: 5px;">
+        <h5 class="text-center mb-4" style="color: #6f42c1;">News List</h5>
         <div class="row">
           {% for news in news_list %}
           <div class="col-md-6 mb-4">
             <div class="card shadow-sm border-light rounded animate__animated animate__fadeIn animate__delay-1s">
               <img src="{{ news.image.url }}" class="card-img-top" alt="News Image" onerror="this.onerror=null; this.src='/static/default-image.jpg';">
               <div class="card-body">
-                <h5 class="card-title">{{ news.title }}</h5>
+                <h5 class="card-title" style="color: #6f42c1;">{{ news.title }}</h5>
                 <p class="card-text">{{ news.content|truncatewords:20 }}</p>
-                <a href="{% url 'news_details' news.id %}" class="btn btn-primary btn-block shadow-lg">Read more</a>
+                <a href="{% url 'news_details_for_user' news.id %}" class="btn btn-block shadow-lg" style="background-color: #6f42c1; color: white;">Read more</a>
               </div>
             </div>
           </div>

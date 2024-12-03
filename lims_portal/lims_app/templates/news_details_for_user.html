@@ -1,0 +1,80 @@
+{% extends "index_for_user.html" %}
+
+{% block main_content %}
+<style>
+  /* Стиль для контейнера */
+  .container {
+    background-color: #f8f9fa; /* Світлий фон */
+    border-radius: 8px; /* Округлені кути */
+    padding: 20px;
+  }
+
+  /* Стиль для блоку новини */
+  .bg-light {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    animation: fadeIn 1s forwards; /* Додаємо анімацію для плавного з'явлення */
+  }
+
+  /* Анімація появи */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Стиль для заголовка новини */
+  h3 {
+    color: #6f42c1; /* Фіолетовий колір */
+    font-size: 2rem;
+    margin-bottom: 15px;
+    animation: slideUp 1s ease-out;
+  }
+
+  /* Анімація для заголовка */
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Стиль для тексту дати публікації */
+  p {
+    color: #6f42c1;
+    font-weight: bold;
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  /* Стиль для вмісту новини */
+  div {
+    color: #333;
+    line-height: 1.6;
+    font-size: 1.1rem;
+    animation: fadeIn 1.5s ease-in-out;
+  }
+</style>
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="bg-light p-4" style="border-radius: 5px;">
+        <h3>{{ news.title }}</h3>
+        <p><strong>Published on:</strong> {{ news.created_at }}</p>
+        <div>{{ news.content|safe }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

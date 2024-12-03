@@ -47,11 +47,13 @@
     <!-- Права панель: пошук і таблиця -->
     <div class="col-md-8">
       <!-- Пошук -->
-      <form action="/readers" method="POST" class="d-flex mb-3">
-        {% csrf_token %}
-        <input class="form-control me-2" type="search" placeholder="Search" name="query" value="{{ query }}">
-        <button class="btn btn-outline-primary" type="submit">Search</button>
-      </form>
+     <form action="/readers/" method="GET" class="d-flex mb-3">
+  {% csrf_token %}
+  <input class="form-control me-2" type="search" placeholder="Search" name="query" value="{{ query }}">
+
+  <button class="btn btn-outline-primary" type="submit">Search</button>
+</form>
+
 
       <!-- Кількість читачів -->
       <p>{{ readers|length }} readers subscribed.</p>

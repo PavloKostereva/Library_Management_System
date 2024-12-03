@@ -18,7 +18,7 @@
       <form action="/books/" method="POST" class="d-flex mb-3">
         {% csrf_token %}
         <input class="form-control me-2" type="search" placeholder="Search by title, author, or genre" name="query" value="{{ query }}">
-        <button class="btn btn-outline-primary" type="submit">Search</button>
+        <button class="btn custom-btn" type="submit">Search</button>
       </form>
 
       <!-- Результати -->
@@ -39,14 +39,14 @@
             {% for book in books %}
             <tr>
               <td>
-                <a href="{% url 'book_details' book.id %}" class="text-decoration-none text-primary">
+                <a href="{% url 'books_details_for_user' book.id %}" class="custom-text">
                   {{ book.title }}
                 </a>
               </td>
               <td>{{ book.author }}</td>
               <td>{{ book.genre }}</td>
               <td>
-                <a href="{% url 'book_details' book.id %}" class="btn btn-info btn-sm">View Details</a>
+                <a href="{% url 'books_details_for_user' book.id %}" class="btn custom-btn btn-sm">View Details</a>
               </td>
             </tr>
             {% empty %}

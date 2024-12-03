@@ -2,12 +2,14 @@
 
 {% block main_content %}
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>{{ news_item.title }}</h2>
-            <p>{{ news_item.content }}</p>
-            <a href="{% url 'read_news' %}" class="btn btn-secondary">Back to News</a>
-        </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="bg-light p-4" style="border-radius: 5px;">
+        <h3>{{ news.title }}</h3>
+        <p><strong>Published on:</strong> {{ news.created_at }}</p>
+        <div>{{ news.content|safe }}</div>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}
