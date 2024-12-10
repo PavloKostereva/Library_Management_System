@@ -39,7 +39,6 @@
           {% for news in news_list %}
           <div class="col-md-6 mb-4">
             <div class="card shadow-sm border-light rounded animate__animated animate__fadeIn animate__delay-1s">
-              <img src="{{ news.image.url }}" class="card-img-top" alt="News Image" onerror="this.onerror=null; this.src='/static/default-image.jpg';">
               <div class="card-body">
                 <h5 class="card-title" style="color: #6f42c1;">{{ news.title }}</h5>
                 <p class="card-text">{{ news.content|truncatewords:20 }}</p>

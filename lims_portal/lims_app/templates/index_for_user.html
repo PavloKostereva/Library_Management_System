@@ -7,17 +7,14 @@
     <title>Library Information Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <style>
-      /* Фоновий колір для верхньої панелі */
       .navbar {
         background-color: #6a0dad; /* фіолетовий */
       }
 
-      /* Колір тексту на панелі */
       .navbar-brand, .nav-link {
-        color: white !important; /* білий текст для кнопок */
+        color: white !important;
       }
 
-      /* Стиль кнопок */
       .nav-link {
         background-color: #7a2baf; /* фіолетовий фон для кнопок */
         border-radius: 5px; /* закруглені кути кнопок */
@@ -27,13 +24,11 @@
         margin-right: 10px; /* відступи між кнопками */
       }
 
-      /* Кнопка при наведенні */
       .nav-link:hover {
-        background-color: #8a2be2; /* світліший фіолетовий для hover */
+        background-color: #8a2be2;
         color: white;
       }
 
-      /* Стиль активної кнопки */
       .nav-link.active {
         background-color: #4b0082; /* темний фіолетовий для активної кнопки */
         color: white;
@@ -47,9 +42,9 @@
       /* Центрування кнопок */
       .nav {
         display: flex;
-        justify-content: center; /* Вирівнюємо кнопки по центру */
-        align-items: center; /* Вирівнюємо кнопки по вертикалі */
-        width: 100%; /* Ширина на весь екран */
+        justify-content: center;
+        align-items: center;
+        width: 100%;
       }
 
       /* Вирівнювання контейнера з кнопками */
@@ -83,30 +78,33 @@
     <div class="container-fluid mt-3">
       <ul class="nav nav-tabs">
         <!-- Кнопка "Home" для користувача -->
-        <li class="nav-item">
-          <a class="nav-link {% if current_tab == 'home' %}active{% endif %}" href="{% url 'home_for_user' %}">HOME</a>
+<!-- Кнопка "Home" для користувача -->
+<li class="nav-item">
+  <a class="nav-link {% if current_tab == 'home' %}active{% endif %}" href="{% url 'home_for_user' %}">HOME</a>
+</li>
 
-        </li>
+<!-- Кнопка "Books" для користувача -->
+<li class="nav-item">
+  <a class="nav-link {% if current_tab == 'books' %}active{% endif %}" href="/books_search_for_user/">BOOKS</a>
+</li>
 
-        <!-- Кнопка "Books" для користувача -->
-        <li class="nav-item">
-          <a class="nav-link {% if current_tab == 'books' %}active{% endif %}" href="/books_search_for_user/">BOOKS</a>
-        </li>
+<!-- Кнопка "Returns" для користувача -->
+<li class="nav-item">
+  <a class="nav-link {% if current_tab == 'returns' %}active{% endif %}" href="{% url 'return_for_user' %}">RETURNS</a>
+</li>
 
-        <!-- Кнопка "Returns" для користувача -->
-        <li class="nav-item">
-          <a class="nav-link {% if current_tab == 'returns' %}active{% endif %}" href="{% url 'return_for_user' %}">RETURNS</a>
-        </li>
+<!-- Кнопка "News" для користувача -->
+<li class="nav-item">
+  <a class="nav-link {% if current_tab == 'news' %}active{% endif %}" href="{% url 'read_news_for_user' %}">READ_NEWS</a>
+</li>
 
-        <!-- Кнопка "News" для користувача -->
-        <li class="nav-item">
-          <a class="nav-link {% if current_tab == 'news' %}active{% endif %}" href="{% url 'read_news_for_user' %}">READ_NEWS</a>
-        </li>
-
-        <<!-- Кнопка "About" для користувача -->
+<!-- Кнопка "About" для користувача -->
 <li class="nav-item">
   <a class="nav-link {% if current_tab == 'about' %}active{% endif %}" href="{% url 'about_library_for_user' %}">ABOUT</a>
 </li>
+
+
+
 
       </ul>
     </div>

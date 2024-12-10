@@ -10,19 +10,34 @@ from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import NewsForm
+#from dll_wrapper import create_book, count_books_by_genre, get_current_date, calculate_days_between
+# book1 = create_book("1984", "George Orwell", "Dystopian", "Secker & Warburg")
+# book2 = create_book("Animal Farm", "George Orwell", "Satire", "Secker & Warburg")
+#
+# books = [book1, book2]
+#
+# # Підрахунок книг за жанром
+# print(f"Books in genre 'Dystopian': {count_books_by_genre(books, 'Dystopian')}")
+#
+# # Поточна дата
+# print(f"Current date: {get_current_date()}")
+#
+# # Різниця між датами
+# days = calculate_days_between("2024-01-01", "2024-12-31")
+# print(f"Days between 2024-01-01 and 2024-12-31: {days}")
+
 def about_library_for_user(request):
-    return render(request, 'about_library_for_user.html')
+    return render(request, 'about_library_for_user.html', {"current_tab": "about"})
+
 
 def home(request):
     return render(request, 'home.html', context={"current_tab": "home"})
 
 def home_for_user(request):
     return render(request, 'home_for_user.html')
-
 @login_required
 def books_search_for_user(request):
-    query = request.GET.get('query', '')  # Get search query
+    query = request.GET.get('query', '')
     user_books = []
 
     if query:
@@ -82,15 +97,20 @@ def books_tab(request):
     return render(request, 'books_and_add.html', {'books': books})
 def save_reader(request):
     if request.method == 'POST':
+        reference_id = request.POST.get('reader_ref_id', '')
+        if Reader.objects.filter(reference_id=reference_id).exists():
+            return HttpResponse("Користувач із таким ID вже існує", status=400)
+
         reader_item = Reader(
             reader_name=request.POST.get('reader_name', ''),
             reader_contact=request.POST.get('reader_contact', ''),
-            reference_id=request.POST.get('reader_ref_id', ''),
+            reference_id=reference_id,
             reader_address=request.POST.get('address', ''),
             active=True
         )
         reader_item.save()
         return redirect('/readers')
+
     return HttpResponse("Невірний метод запиту", status=400)
 
 
@@ -115,7 +135,20 @@ def books(request):
 
     return render(request, 'books_and_add.html', {'books': books, 'query': query, 'can_add_book': can_add_book})
 
+def login_reader(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '')
+        reference_id = request.POST.get('reference_id', '')
 
+        # Перевірка існування користувача
+        try:
+            reader = Reader.objects.get(reader_name=name, reference_id=reference_id, active=True)
+            request.session['reader_id'] = reader.id  # Зберігаємо ID у сесії
+            return redirect('/dashboard')  # Перенаправлення на головну сторінку користувача
+        except Reader.DoesNotExist:
+            return HttpResponse("Користувача не знайдено. Перевірте дані або зверніться до бібліотекаря.", status=404)
+
+    return render(request, 'user_login.html')
 
 @login_required
 def add_book(request):

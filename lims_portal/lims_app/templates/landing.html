@@ -5,25 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Система управління ролями</title>
-    <link rel="stylesheet" href="{% static 'styles/main.css' %}"> <!-- Підключення CSS, якщо потрібно -->
+    <link rel="stylesheet" href="{% static 'styles/main.css' %}">
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: url('{% static "MAIN.jpeg" %}') no-repeat center center fixed;
+            background: url('{% static "main.png" %}') no-repeat center center fixed;
             background-size: cover;
             height: 100vh;
             color: #fff;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Розміщення елементів зверху */
+            justify-content: flex-start;
             align-items: center;
         }
 
         .container {
-            margin-top: 50px; /* Відступ від верхнього краю сторінки */
+            margin-top: 50px;
             text-align: center;
-            background: rgba(0, 0, 0, 0.6); /* Напівпрозорий фон */
+            background: rgba(0, 0, 0, 0.6);
             padding: 20px 40px;
             border-radius: 10px;
         }
@@ -47,20 +47,20 @@
         }
 
         .button-user {
-            background-color: #4CAF50; /* Зелений */
+            background-color: #6610f2;
         }
 
         .button-user:hover {
-            background-color: #45a049;
+            background-color: #6610f2;
             transform: scale(1.05);
         }
 
         .button-librarian {
-            background-color: #ffa500; /* Помаранчевий */
+            background-color: #007bff;
         }
 
         .button-librarian:hover {
-            background-color: #ff8c00;
+            background-color: #007bff;
             transform: scale(1.05);
         }
     </style>

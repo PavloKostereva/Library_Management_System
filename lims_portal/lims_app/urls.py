@@ -33,7 +33,7 @@ urlpatterns = [
     path('readers/', views.readers_tab, name='readers_tab'),  # Перегляд читачів
     path('readers/add/', views.save_reader, name='add_reader'),  # Додавання читача
     path('returns/', views.returns_page, name='returns'),  # Сторінка повернення книг
-
+    path('books/search/', views.books_search_for_user, name='books_search_for_user'),
     # Доступ для всіх (читачів і бібліотекарів)
     path('books/', views.books, name='books'),  # Сторінка книг
     path('books/<int:id>/', views.book_details, name='book_details'),  # Деталі книги
@@ -49,6 +49,7 @@ urlpatterns = [
     path('login/user/', views.user_login, name='user_login'),  # Вхід для користувача
 
     # Додаткові маршрути для користувача
+    path('books/search/', views.books_search_for_user, name='books_search_for_user'),
     path('books_search_for_user/', views.books_search_for_user, name='books_search_for_user'),  # Пошук книг,
     path('books_details_for_user/<int:id>/', views.books_details_for_user, name='books_details_for_user'),
 

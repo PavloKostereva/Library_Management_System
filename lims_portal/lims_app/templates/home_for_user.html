@@ -10,7 +10,7 @@
     <img src="{%static 'LIMS_LOGO_BIG.png'%}" class="rounded float-start" alt="LIMS" height="200" style="margin-right: 10px;">
     <h1 class="display-4">Hello, readers!</h1>
         <p>Welcome to City Library. We have a large collection of books to cater the reading needs of all kinds of readers.</p>
-        <p><a role="button" href="#" class="btn btn-lg" style="background-color: #6f42c1; color: white; border: none;">Browse our collection</a>
+        <a role="button" href="{% url 'books_search_for_user' %}" class="btn btn-lg" style="background-color: #6f42c1; color: white; border: none;">Browse our collection</a>
         </p>
     </div>
 

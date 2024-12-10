@@ -3,21 +3,18 @@
 
 {% block main_content %}
 <div class="container mt-5">
-  <!-- Заголовок -->
   <div class="row mb-4">
     <div class="col">
       <h3 class="text-primary">Returns</h3>
     </div>
   </div>
 
-  <!-- Пошук -->
   <form action="/returns/" method="POST" class="d-flex mb-4">
     {% csrf_token %}
     <input type="text" class="form-control flex-grow-1" placeholder="Search by book title, author, or reader" name="query" value="{{ query }}">
     <button type="submit" class="btn btn-primary ms-2">Search</button>
   </form>
-
-  <!-- Таблиця повернень -->
+  
   <div class="table-responsive">
     <table class="table table-bordered">
       <thead class="table-primary">

@@ -21,7 +21,7 @@ class Book(models.Model):
     publisher = models.CharField(max_length=200, blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
     available = models.BooleanField(default=True)
-    added_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # Link to Django User model
+    added_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.title
