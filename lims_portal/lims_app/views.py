@@ -8,9 +8,9 @@ from django.db.models import Q
 from .models import News
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+
 import ctypes
 
 def get_book_return_details(request):
@@ -137,20 +137,30 @@ def books(request):
 
     return render(request, 'books_and_add.html', {'books': books, 'query': query, 'can_add_book': can_add_book})
 
-def login_reader(request):
-    if request.method == 'POST':
-        name = request.POST.get('name', '')
-        reference_id = request.POST.get('reference_id', '')
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Reader
 
-        # Перевірка існування користувача
+
+def login_reader(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        reference_id = request.POST.get("reference_id")
+
         try:
+            # Attempt to get the reader by name and reference_id
             reader = Reader.objects.get(reader_name=name, reference_id=reference_id, active=True)
-            request.session['reader_id'] = reader.id  # Зберігаємо ID у сесії
-            return redirect('/dashboard')  # Перенаправлення на головну сторінку користувача
+
+            # If reader is found and active, allow login and redirect
+            return redirect('home_for_user')  # Redirect to the user home page (replace with your actual view)
+
         except Reader.DoesNotExist:
-            return HttpResponse("Користувача не знайдено. Перевірте дані або зверніться до бібліотекаря.", status=404)
+            # If the reader doesn't exist or is inactive
+            messages.error(request, "Користувач не знайдений або деактивований.")
+            return redirect('user_login')  # Stay on the login page and show error message
 
     return render(request, 'user_login.html')
+
 
 @login_required
 def add_book(request):
@@ -291,23 +301,26 @@ def librarian_login(request):
             return render(request, 'librarian_login.html', {'error': 'Невірні дані'})
     return render(request, 'librarian_login.html')
 
+def search_readers(request):
+    query = request.GET.get("query", "")
+    readers = Reader.objects.filter(reader_name__icontains=query) | Reader.objects.filter(reference_id__icontains=query)
+    return render(request, "readers.html", {"readers": readers})
 
 def user_login(request):
-    if request.method == 'POST':
-        # Отримуємо введені ім'я та ID
-        name = request.POST.get('name')
-        reference_id = request.POST.get('reference_id')
+    if request.method == "POST":
+        name = request.POST.get("name")
+        reference_id = request.POST.get("reference_id")
 
-        # Перевірка, чи співпадає ім'я та ID
-        if name == "Pavlo" and reference_id == "12345":
-            # Якщо ім'я та ID правильні, перенаправляємо користувача на сторінку для користувача
-            return redirect('index_for_user')  # Замість 'home' вказуємо 'index_for_user'
-        else:
-            # Якщо ім'я або ID невірні, показуємо помилку
-            return HttpResponse("Невірне ім'я або ID!")
+        # Перевірка існування читача
+        try:
+            reader = Reader.objects.get(reader_name=name, reference_id=reference_id)
+            if reader:
+                messages.success(request, "Вхід успішний!")
+                return redirect("/home_for_user/")  # Перенаправлення після входу
+        except Reader.DoesNotExist:
+            messages.error(request, "Невірне ім'я або ID. Спробуйте ще раз.")
 
-    return render(request, 'user_login.html')
-
+    return render(request, "user_login.html")
 
 def books_details_for_user(request, id):
     book = get_object_or_404(Book, id=id)

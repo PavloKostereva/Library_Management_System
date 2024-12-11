@@ -76,35 +76,33 @@
 <div class="container">
     <h1>Book Return Information</h1>
 
-    <!-- Book Return Details -->
     <div class="details">
         <div class="detail">
-            <span class="label">Reader Name:</span>
+            <span class="label">Reader Name:  John Doe</span>
             <span class="value">{{ reader_name }}</span>
         </div>
         <div class="detail">
-            <span class="label">Book Title:</span>
+            <span class="label">Book Title: Python 101</span>
             <span class="value">{{ book_title }}</span>
         </div>
         <div class="detail">
-            <span class="label">Due Date:</span>
+            <span class="label">Due Date: 2024-12-01</span>
             <span class="value">{{ due_date }}</span>
         </div>
         <div class="detail">
-            <span class="label">Return Date:</span>
+            <span class="label">Return Date: 2024-12-05</span>
             <span class="value">{{ return_date }}</span>
         </div>
         <div class="detail">
-            <span class="label">Overdue:</span>
+            <span class="label">Overdue: Yes</span>
             <span class="value">{{ is_overdue }}</span>
         </div>
         <div class="detail">
-            <span class="label">Fine:</span>
+            <span class="label">Fine: 5.750000</span>
             <span class="value">${{ fine }}</span>
         </div>
     </div>
 
-    <!-- Optionally, more information -->
     <div class="detail">
         <p><strong>Summary:</strong></p>
         <p>{{ book_return_details }}</p>
