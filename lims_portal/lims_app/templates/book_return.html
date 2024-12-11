@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Return Details</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .details {
+            margin-top: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .details .detail {
+            margin-bottom: 15px;
+        }
+
+        .details .label {
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        .details .value {
+            color: #555;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        /* Button Style */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0056b3;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #004085;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Book Return Information</h1>
+
+    <!-- Book Return Details -->
+    <div class="details">
+        <div class="detail">
+            <span class="label">Reader Name:</span>
+            <span class="value">{{ reader_name }}</span>
+        </div>
+        <div class="detail">
+            <span class="label">Book Title:</span>
+            <span class="value">{{ book_title }}</span>
+        </div>
+        <div class="detail">
+            <span class="label">Due Date:</span>
+            <span class="value">{{ due_date }}</span>
+        </div>
+        <div class="detail">
+            <span class="label">Return Date:</span>
+            <span class="value">{{ return_date }}</span>
+        </div>
+        <div class="detail">
+            <span class="label">Overdue:</span>
+            <span class="value">{{ is_overdue }}</span>
+        </div>
+        <div class="detail">
+            <span class="label">Fine:</span>
+            <span class="value">${{ fine }}</span>
+        </div>
+    </div>
+
+    <!-- Optionally, more information -->
+    <div class="detail">
+        <p><strong>Summary:</strong></p>
+        <p>{{ book_return_details }}</p>
+    </div>
+
+    <div class="footer">
+        <a href="/readers/" class="btn">Back to Readers Page</a>
+    </div>
+</div>
+
+</body>
+</html>

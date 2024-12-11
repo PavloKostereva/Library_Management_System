@@ -1,7 +1,32 @@
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import User
-from django import forms
+import ctypes
+
+# Завантаження DLL
+lib = ctypes.CDLL('./ConsoleApplication3.dll')
+
+# Встановлення типів повернення функцій
+lib.isBookOverdue.restype = ctypes.c_bool
+lib.formatBookReturnDetails.restype = ctypes.c_char_p
+
+# Функція для перевірки, чи книга прострочена
+def check_book_overdue(due_date, return_date):
+    fine = ctypes.c_double(0.0)
+    is_overdue = lib.isBookOverdue(due_date.encode('utf-8'), return_date.encode('utf-8'), ctypes.byref(fine))
+    return is_overdue, fine.value
+
+# Виклик функції для форматування детальної інформації про повернення книги
+def format_return_details(reader_name, book_title, due_date, return_date, is_overdue, fine):
+    result = lib.formatBookReturnDetails(
+        reader_name.encode('utf-8'),
+        book_title.encode('utf-8'),
+        due_date.encode('utf-8'),
+        return_date.encode('utf-8'),
+        is_overdue,
+        fine
+    )
+    return result.decode('utf-8')
 
 class Reader(models.Model):
     reader_name = models.CharField(max_length=255)
@@ -33,6 +58,15 @@ class Return(models.Model):
     due_date = models.DateField()
     is_overdue = models.BooleanField(default=False)
     fine = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+
+    def save(self, *args, **kwargs):
+        is_overdue, fine = check_book_overdue(str(self.due_date), str(self.return_date))
+        self.is_overdue = is_overdue
+        self.fine = fine
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Return: {self.book.title} by {self.reader.reader_name}"
 
 class News(models.Model):
     title = models.CharField(max_length=255)

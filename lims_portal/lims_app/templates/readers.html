@@ -47,13 +47,12 @@
     <!-- Права панель: пошук і таблиця -->
     <div class="col-md-8">
       <!-- Пошук -->
-     <form action="/readers/" method="GET" class="d-flex mb-3">
-  {% csrf_token %}
-  <input class="form-control me-2" type="search" placeholder="Search" name="query" value="{{ query }}">
+      <form action="/readers/" method="GET" class="d-flex mb-3">
+        {% csrf_token %}
+        <input class="form-control me-2" type="search" placeholder="Search" name="query" value="{{ query }}">
 
-  <button class="btn btn-outline-primary" type="submit">Search</button>
-</form>
-
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+      </form>
 
       <!-- Кількість читачів -->
       <p>{{ readers|length }} readers subscribed.</p>
@@ -95,5 +94,11 @@
       </div>
     </div>
   </div>
+
+  <!-- Кнопка для переходу на цю ж сторінку -->
+  <div class="text-center mt-4">
+    <a href="/book-return/" class="btn btn-secondary">Go to Readers Page</a>
+  </div>
+
 </div>
 {% endblock %}

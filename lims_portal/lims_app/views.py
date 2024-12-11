@@ -10,21 +10,23 @@ from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-#from dll_wrapper import create_book, count_books_by_genre, get_current_date, calculate_days_between
-# book1 = create_book("1984", "George Orwell", "Dystopian", "Secker & Warburg")
-# book2 = create_book("Animal Farm", "George Orwell", "Satire", "Secker & Warburg")
-#
-# books = [book1, book2]
-#
-# # Підрахунок книг за жанром
-# print(f"Books in genre 'Dystopian': {count_books_by_genre(books, 'Dystopian')}")
-#
-# # Поточна дата
-# print(f"Current date: {get_current_date()}")
-#
-# # Різниця між датами
-# days = calculate_days_between("2024-01-01", "2024-12-31")
-# print(f"Days between 2024-01-01 and 2024-12-31: {days}")
+from django.shortcuts import render
+import ctypes
+
+def get_book_return_details(request):
+    # Завантаження DLL
+    lib = ctypes.CDLL('./ConsoleApplication3.dll')
+
+    # Встановлення типу повернення
+    lib.formatBookReturnDetails.restype = ctypes.c_char_p
+
+    # Виклик функції
+    result = lib.formatBookReturnDetails(
+        b"John Doe", b"Python 101", b"2024-12-01", b"2024-12-05", True, ctypes.c_double(5.75)
+    )
+
+    # Передача результату в шаблон
+    return render(request, 'book_return.html', {'book_return_details': result.decode('utf-8')})
 
 def about_library_for_user(request):
     return render(request, 'about_library_for_user.html', {"current_tab": "about"})

@@ -3,6 +3,7 @@ from . import views
 from .views import contact_librarian
 from .views import edit_news, news_details, delete_news
 urlpatterns = [
+    path('book-return/', views.get_book_return_details, name='book_return'),
     path('about/', views.about_library_for_user, name='about_library_for_user'),
     path('news/<int:id>/edit/', edit_news, name='news_edit'),
     path('news/<int:pk>/', news_details, name='news_details'),
